@@ -1,7 +1,8 @@
 import socketio
 sio = socketio.Server()
 app = socketio.WSGIApp(sio, static_files={
-    '/': './templates/'
+    '/': './templates/',
+    '/static/steering.png': './static/steering.png'
 })
 
 @sio.event
