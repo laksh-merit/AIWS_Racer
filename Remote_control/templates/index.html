@@ -5,13 +5,28 @@
         <title></title>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <link rel="shortcut icon" href="#">
     </head>
 
     <body>
+    <div class="frame">
+            <p id="currentFrame"></p>
+        </div>
+        <div class="container mt-5">
+            <video id="video1" width="320" height="240"  controls autoplay muted>
+                <source src="static/Welcome.mp4" type=video/mp4>
+                <source src="movie.ogg" type="video/ogg">
+            </video>
+        </div>
+        <div class="row">
+            <button type="button" id="Record_button">Record</button>
+        </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
             <form>
             <div class="rangeslider" style="float:left; margin: 16px;">
-                <img src="/static/steering.png" id="steering" alt="Steering Image"><br>
+                <img src="static\steering.png" id="steering" alt="Steering Image"><br>
 
                 <input type="range" min="1" max="50" value="25" class="myslider" id="sliderRange" style="width: 100%;"><br>
                 <center><input type="text" value="25" name="sliderValue" id="sliderValue" style="text-align: center;"></center>
@@ -27,6 +42,7 @@
             </div></center>
             </form>
 
+
         <script>
         const sio = io();
         sio.on('connect',() => {
@@ -38,6 +54,7 @@
         });
         var rangeslider = document.getElementById("sliderRange");
                     var current;
+                    var a;
 
 
             rangeslider.oninput = function() {
@@ -54,8 +71,11 @@
                 else {
                     steering.style.transform = 'rotate(0deg)'
                 }
-
-                sio.send(current);
+                let message = {
+                    a:'False',
+                    val:current
+            }
+                sio.send(message);
 
             }
 
@@ -66,7 +86,11 @@
                 var steering = document.getElementById('steering');
                 steering.style.transform = 'rotate(0deg)'
                 var cur = current.toString();
-                sio.send(cur);
+                let message = {
+                    a:'False',
+                    val:cur
+            }
+                sio.send(message);
             }
 
             var a = 1;
@@ -81,7 +105,11 @@
                 if (btnDown1) {
                     var val = "forward";
                     console.log(val)
-                    sio.send(val);
+                    let message = {
+                        a:'False',
+                        val:val
+            }
+                sio.send(message);
                 }
             }
             setInterval(test, 100);
@@ -100,7 +128,11 @@
                 if (btnDown2) {
                     var val = "backward";
                     console.log(val)
-                    sio.send(val);
+                    let message = {
+                        a:'False',
+                        val:val
+                    }
+                sio.send(message);
                 }
             }
             setInterval(test, 100);
@@ -119,10 +151,40 @@
                 if (btnDown3) {
                     var val = "stop";
                     console.log(val)
-                    sio.send(val);
+                    let message = {
+                        a:'False',
+                        val:val
+                    }
+                sio.send(message);
                 }
             }
             setInterval(test, 100);
         </script>
+    <script>
+    var timesClicked = 0;
+    $("#Record_button").click(function() {
+        timesClicked++;
+        if (timesClicked>1) {
+            var n = (video1.currentTime * 29.97).toPrecision(6);
+            let message = {
+                    a:'True',
+                    frame_no:n,
+                    flag:'True'
+            }
+            sio.send(message);
+        }
+        else{
+            $('#currentFrame').html((video1.currentTime * 29.97).toPrecision(6));
+                var n = (video1.currentTime * 29.97).toPrecision(6);
+                let message = {
+                        a:'True',
+                        frame_no:n,
+                        flag:'False'
+                }
+            sio.send(message);
+        $("#Record_button").html('Stop')
+            }
+    });
+</script>
 </body>
 </html>
