@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIWS_Racer</title>
+
+    <link href="../assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="../assets/js/script.js"></script>
+</head>
+<body>
+    <div class="content">
+        <div class="directions" style="margin-right: 40px;">
+            <ul style="list-style-type:none;">
+                <li>
+                    <button class="button"  value="forward" onmousedown="mDown1()" onmouseup="mUp1()"  style="background-color: transparent; border: none;">
+                        <i class="icofont-stylish-up icofont-5x"></i>
+                    </button>
+                </li>
+                <li style="margin-top: 40px;">
+                    <button class="button" value="backward" onmousedown="mDown2()" onmouseup="mUp2()" style="background-color: transparent; border: none;">
+                        <i class="icofont-stylish-down icofont-5x"></i>
+                    </button>
+                    <script>
+                         var a = 1;
+                        var btnDown2 = false;
+                        function mDown2() {
+                            btnDown2 = true;
+                        }
+                        function mUp2() {
+                            btnDown2 = false;
+                        }
+                        function test() {
+                            if (btnDown2) {
+                                var val = "backward";
+                                sio.send(val)
+                        }
+                        }
+                        setInterval(test, 100);
+                        </script>
+                </li>
+            </ul>
+        </div>
+        <div class="video">
+            <video id="video1" width="320" height="240"  controls autoplay muted>
+                <source src="../static/Welcome.mp4" type=video/mp4>
+            </video>
+        </div>
+        <div class="slidecontainer" style="width: 200px; margin-left: 40px;">
+            <input type="range" min="1" max="100" value="50" class="slider" id="sliderRange" oninput="onInput()" onchange="onChange()">
+        </div>
+        <div class="record">
+            <button style="background-color: transparent; border: none; margin-bottom: 300px;" class="button">
+                <i class="icofont-play-alt-1 icofont-3x"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html>
