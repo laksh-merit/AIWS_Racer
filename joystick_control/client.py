@@ -13,4 +13,4 @@ def disconnect():
 def handleMessage(msg):
 	print(msg)
 
-sio.connect("http://139.59.44.106:5000")
+sio.connect("http://localhost:5000")
