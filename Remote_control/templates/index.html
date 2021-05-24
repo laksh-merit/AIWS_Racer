@@ -11,6 +11,8 @@
     </head>
 
     <body>
+    <button id="myButton"></button>
+    <br> <br>
     <div class="frame">
             <p id="currentFrame"></p>
         </div>
@@ -46,10 +48,16 @@
         <script>
         const sio = io();
         sio.on('connect',() => {
+            var b = document.getElementById('myButton');
+            b.style.backgroundColor = 'green';
+            b.innerHTML = 'connect';
             console.log("connected")
         });
 
         sio.on('disconnect',() => {
+            var b = document.getElementById('myButton');
+            b.style.backgroundColor = 'grey';
+            b.innerHTML = 'disconnect';
             console.log("disconnected")
         });
         var rangeslider = document.getElementById("sliderRange");
