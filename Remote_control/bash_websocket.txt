@@ -11,4 +11,4 @@ eventlet - 0.30.0
 gunicorn -k eventlet -w 1 --reload app:app
 
 //to run in port 5000
-gunicorn -b 0.0.0.0:5000 -k eventlet -w 1 --reload app:app
+gunicorn -b 127.0.0.1:5000 -k eventlet -w 1 --reload app:app
