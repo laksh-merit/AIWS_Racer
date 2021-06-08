@@ -1,65 +1,93 @@
-import cv2
+from flask import Flask,render_template,flash, request, redirect, url_for,Response
+from flask_socketio import SocketIO,send
 import os
-import random
-import csv
-import socketio
-sio = socketio.Server()
-app = socketio.WSGIApp(sio, static_files={
-    '/': './templates/',
-    '/static/steering.png':'./static/steering.png',
-    '/static/Welcome.mp4':'./static/Welcome.mp4'
-})
+import cv2
+# from server import frame1
+import imagezmq
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+gauth = GoogleAuth()
+gauth.LocalWebserverAuth()
+drive = GoogleDrive(gauth)
+import json
+import requests
+app = Flask(__name__)
+imageHub = imagezmq.ImageHub()
 
-@sio.event
-def connect(sid,environ):
-    print(sid,"connected")
+ALLOWED_EXTENSIONS = {'h5'}
+@app.route('/')
+def hello_world():
+    return render_template('index1.html')
 
-@sio.event
-def disconnect(sid):
-    print(sid,"disconnected")
+@app.route('/home')
+def hello_world1():
+    return render_template('index1.html')
 
-def cssv():
-    APP_FOLDER = 'part/'
-    totalFiles = 0
-    for base, dirs, files in os.walk(APP_FOLDER):
-        for Files in files:
-            totalFiles += 1
-    output_file = open(r'Image.csv', 'w', newline='')
-    wr = csv.writer(output_file)
-    count=0
-    v=[]
-    for j in range(totalFiles):
-        d='C:/Users/robot/Full_task/part/'+str(j)+'.jpg'
-        v.append([d])
-        f=random.randint(1,100)
-        v[count].append(f)
-        count+=1
-    wr.writerows(v)
+@app.route('/autonomus')
+def autonomus():
+    return render_template( 'index.html' )
+
+@app.route('/training')
+def training():
+    return render_template('index2.html')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/uploadLabel', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            file.save("./upload/"+filename)
+            #upload file to google drive
+            gfile = drive.CreateFile({'parents': [{'id': '1r0V3vOheKCTNqkXFQeN2ROfdDj8X2juZ'}]})
+            gfile['title'] = "model.h5"
+            gfile.SetContentFile('./upload/' + filename)
+            gfile.Upload()
+            gfile.content.close()
+            os.remove('./upload/'+filename)
+    return render_template('index.html')
+
+def gen_frames():
+    while True:
+        (rpiName, frame1) = imageHub.recv_image()
+        imageHub.send_reply(b'OK')
+        frame = frame1  # read the camera frame
+
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
+app.config['SECRET_KEY'] = 'mysecret'
+socketio = SocketIO(app, cors_allowed_origins='*')
 
-def message_handler(sid,msg):
-    if msg['a'] == 'False':
-        sio.send(msg['val'])
-        print(msg['val'])
-    else:
-        n = msg['frame_no']
-        m = msg['flag']
-        a = float(n)
-        cap = cv2.VideoCapture('static/Welcome.mp4')
-        last = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        i = 0
-        while (a <= last):
-            if m == 'False':
-                cap.set( 1, a )
-                ret, frame = cap.read()
-                cv2.imwrite('part/' + str(i) + '.jpg', frame)
-                a += 1
-                i += 1
-                cssv();
+@socketio.event
+def connect():
+    print("connected")
 
-sio.on('message', message_handler)
+@socketio.event
+def disconnect():
+    print("disconnected")
 
+@socketio.on('message')
+def handleMessage(msg):
+	print(msg)
+	send(msg, broadcast=True)
 
-
-
+if __name__ == '__main__':
+	socketio.run( app)
