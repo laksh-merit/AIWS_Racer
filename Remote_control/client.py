@@ -1,4 +1,3 @@
-import sys
 import socketio
 sio = socketio.Client()
 
@@ -14,4 +13,4 @@ def disconnect():
 def handleMessage(msg):
 	print(msg)
 
-sio.connect("http://127.0.0.1:8000")
+sio.connect("http://127.0.0.1:5000")
