@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>trial</title>
+    <script src= https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js></script>
+    <script>
+    $(function() {
+    $('#upload-file-btn').click(function() {
+        var form_data = new FormData($('#upload-file')[0]);
+        $.ajax({
+            type: 'POST',
+            url: '/uploadLabel',
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(data) {
+                alert('Successfully uploaded!');
+            },
+        });
+        $("#control").val("");
+    });
+});
+</script>
+</head>
+<body>
+<form id="upload-file" method="post" enctype="multipart/form-data">
+    <fieldset>
+        <label>Select only h5 file</label>
+        <input name="file" type="file" id="control">
+    </fieldset>
+    <fieldset>
+        <button id="upload-file-btn" type="button">Upload</button>
+        <a href=home><button type="button">Back</button></a>
+    </fieldset>
+</form>
+
+</body>
+</html>
