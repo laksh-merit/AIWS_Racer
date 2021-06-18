@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
- <title>Home page</title>
+  <title>Google Auth Demo</title>
+  <meta name="google-signin-client_id" content="31659017829-a43c2oe5bsvjgb993e3hkmsc2ch6i30h.apps.googleusercontent.com">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
-<p align="center"><a href=autonomus ><button class=grey style="height:75px;width:150px">Autonomus</button></a></p><br><br>
-<br><br>
-<p align="center"><a href=training ><button class=grey style="height:75px;width:150px">Training</button></a></p>
+  <h1>Welcome to the Demo</h1>
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <script>
+  function onSignIn(googleUser) {
+  location.assign('ind');
+}
+</script>
+
 </body>
 </html>
