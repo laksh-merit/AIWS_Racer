@@ -17,19 +17,32 @@ imageHub = imagezmq.ImageHub()
 ALLOWED_EXTENSIONS = {'h5'}
 @app.route('/')
 def hello_world():
-    return render_template('index1.html')
+    return render_template('index.html')
 
 @app.route('/home')
 def hello_world1():
     return render_template('index1.html')
 
+@app.route('/homego')
+def homego():
+    return render_template('index.html')
+
+@app.route('/homepage')
+def homepage():
+    return render_template('index1.html')
+
 @app.route('/autonomus')
 def autonomus():
-    return render_template( 'index.html' )
+    return render_template( 'index3.html' )
 
 @app.route('/training')
 def training():
     return render_template('index2.html')
+
+@app.route('/ind')
+def ind():
+    return render_template('index1.html')
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -55,7 +68,7 @@ def upload_file():
             gfile.Upload()
             gfile.content.close()
             os.remove('./upload/'+filename)
-    return render_template('index.html')
+    return render_template('index3.html')
 
 def gen_frames():
     while True:
@@ -90,4 +103,4 @@ def handleMessage(msg):
 	send(msg, broadcast=True)
 
 if __name__ == '__main__':
-	socketio.run( app)
+    socketio.run(app)
