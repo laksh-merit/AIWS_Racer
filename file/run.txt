@@ -1,0 +1,4 @@
+python app.py  -- to run server 
+python client.py -- autonomus client
+python client1.py -- training client
+python client2.py -s 127.0.0.1 -- webcam in localhost 

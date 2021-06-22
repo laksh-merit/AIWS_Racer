@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>AIWS Racer | Home</title>
+  <meta name="google-signin-client_id" content="31659017829-a43c2oe5bsvjgb993e3hkmsc2ch6i30h.apps.googleusercontent.com">
+  <link rel="stylesheet" href="{{url_for('static',filename='home/style.css')}}">
+</head>
+<body>
+<div class="drop-shadow">
+<div class="glass"></div>
+  <span>AIWS Racer</span>
+  <button class="btn1" style="margin-left: -10em;" onclick="autonomous()">Autonomous</button>
+  <button class="btn1" style="margin-left: 10em; padding-left: 37px; padding-right: 37px;" onclick="training();">Training</button>
+  <button class="signout btn2" onclick="signOut();" style="margin-top: 7em;">Signout</button>
+  <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+        location.assign('/');
+      });
+    }
+
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+
+    function autonomous() {
+      location.assign('autonomus');
+    }
+
+    function training() {
+      location.assign('training');
+    }
+  </script>
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+</div>
+</div>
+</body>
+</html>
