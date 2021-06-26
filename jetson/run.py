@@ -59,4 +59,4 @@ def handleMessage(msg):
             kit.servo[15].angle = int(msg)
 
 
-sio.connect("http://139.59.44.106:5000")
+sio.connect("http://localhost:5000")
